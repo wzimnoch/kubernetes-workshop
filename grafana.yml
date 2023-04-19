@@ -1,0 +1,49 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: grafana
+  namespace: argocd
+spec:
+  destination:
+    namespace: monitoring
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    chart: grafana
+    helm:
+      values: |
+        replicas: 1
+        persistence:
+          enabled: true
+          size: 10Gi
+          accessModes:
+          - ReadWriteOnce
+        ingress:
+          enabled: true
+          annotations:
+            kubernetes.io/ingress.class: nginx
+            kubernetes.io/tls-acme: "true"
+          hosts:
+          - a8acf4c81a84b45419eaaf0b8b939e4f-759977394.us-east-1.elb.amazonaws.com
+          tls:
+          - secretName: grafana
+            hosts:
+            - a8acf4c81a84b45419eaaf0b8b939e4f-759977394.us-east-1.elb.amazonaws.com
+        grafana.ini:
+          server:
+            root_url: http://a8acf4c81a84b45419eaaf0b8b939e4f-759977394.us-east-1.elb.amazonaws.com
+        resources:
+          limits:
+            cpu: 1000m
+            memory: 1Gi
+          requests:
+            cpu: 10m
+            memory: 512Mi
+    repoURL: https://grafana.github.io/helm-charts
+    targetRevision: 6.x
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

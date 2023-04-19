@@ -11,7 +11,8 @@ spec:
   source:
     chart: nginx-ingress
     helm:
-      values: ""
+      values: |
+        controller.service.httpPort.enable: false
     repoURL: https://helm.nginx.com/stable
     targetRevision: "*"
   syncPolicy:
