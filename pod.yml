@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: guestbook
+  labels:
+    app: guestbook
+spec:
+  containers:
+    - name: guestbook
+      image: mrdunski/guestbook:0.1
+      ports:
+        - containerPort: 80
+          name: http
+          protocol: TCP
+  restartPolicy: Always
